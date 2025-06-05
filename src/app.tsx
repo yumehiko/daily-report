@@ -8,17 +8,12 @@ type Task = {
   end: string;
 };
 
-declare global {
-  interface Window {
-    dailyReportAPI: {
-      saveTemp: (data: string) => void;
-      saveReport: (filename: string, data: string) => void;
-    };
-  }
-}
-
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    // localStorageから初期値を取得
+    const saved = localStorage.getItem('daily-report-tasks');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [result, setResult] = useState<string>("");
   const hasIncomplete = tasks.some(t => !t.start || !t.end);
 
@@ -26,6 +21,7 @@ function App() {
   const updateTask = (id: string, key: keyof Task, value: string) => {
     const newTasks = tasks.map(t => t.id === id ? { ...t, [key]: value } : t);
     setTasks(newTasks);
+    localStorage.setItem('daily-report-tasks', JSON.stringify(newTasks));
   };
 
   // タスク追加
@@ -35,12 +31,14 @@ function App() {
       { id: Math.random().toString(36).slice(2), start: "", name: "", end: "" }
     ];
     setTasks(newTasks);
+    localStorage.setItem('daily-report-tasks', JSON.stringify(newTasks));
   };
 
   // タスク削除
   const removeTask = (id: string) => {
     const newTasks = tasks.filter(t => t.id !== id);
     setTasks(newTasks);
+    localStorage.setItem('daily-report-tasks', JSON.stringify(newTasks));
   };
 
   // 日報出力用データ生成
@@ -96,11 +94,23 @@ function App() {
   // 保存ボタン活性判定（日付またぎ・未入力チェックは簡易実装）
   const isMultiDay = tasks.some(t => t.start && t.end && t.start > t.end);
 
+  // 新規作成（タスク全消去＋localStorageクリア）
+  const handleNewDay = () => {
+    setTasks([]);
+    setResult("");
+    localStorage.removeItem('daily-report-tasks');
+  };
+
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
       <h1>日報記録</h1>
-      <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2>タスク一覧</h2>
+        <button onClick={handleNewDay} style={{ background: '#eee', border: '1px solid #ccc', borderRadius: 4, padding: '0.3em 1em', marginLeft: 16 }}>
+          新規作成
+        </button>
+      </div>
+      <div>
         {tasks.map(t => (
           <div key={t.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
             <input type="time" value={t.start} onChange={e => updateTask(t.id, "start", e.target.value)} style={{ width: 80 }} />
