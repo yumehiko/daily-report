@@ -26,9 +26,11 @@ function App() {
 
   // タスク追加
   const addTask = () => {
+    const last = tasks[tasks.length - 1];
+    const start = last ? last.end : "";
     const newTasks = [
       ...tasks,
-      { id: Math.random().toString(36).slice(2), start: "", name: "", end: "" }
+      { id: Math.random().toString(36).slice(2), start, name: "", end: "" }
     ];
     setTasks(newTasks);
     localStorage.setItem('daily-report-tasks', JSON.stringify(newTasks));
