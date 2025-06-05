@@ -101,6 +101,21 @@ function App() {
     localStorage.removeItem('daily-report-tasks');
   };
 
+  // 結果エリアクリック時にテキストをコピー
+  const copyResult = () => {
+    if (!result) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(result);
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = result;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+  };
+
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
       <h1>日報記録</h1>
@@ -130,7 +145,12 @@ function App() {
       </div>
       <div>
         <h2>結果表示エリア</h2>
-        <pre style={{ background: "#f4f4f4", padding: 12, borderRadius: 6 }}>{result}</pre>
+        <pre
+          onClick={copyResult}
+          style={{ background: "#f4f4f4", padding: 12, borderRadius: 6, cursor: "pointer" }}
+        >
+          {result}
+        </pre>
       </div>
     </div>
   );
