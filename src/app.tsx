@@ -17,6 +17,14 @@ function App() {
   const [result, setResult] = useState<string>("");
   const hasIncomplete = tasks.some(t => !t.start || !t.end);
 
+  const roundToHalfHour = (date: Date) => {
+    const minutes = date.getHours() * 60 + date.getMinutes();
+    const rounded = Math.round(minutes / 30) * 30;
+    const h = Math.floor(rounded / 60) % 24;
+    const m = rounded % 60;
+    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+  };
+
   // タスク編集
   const updateTask = (id: string, key: keyof Task, value: string) => {
     const newTasks = tasks.map(t => t.id === id ? { ...t, [key]: value } : t);
@@ -26,9 +34,10 @@ function App() {
 
   // タスク追加
   const addTask = () => {
+    const initialStart = tasks.length === 0 ? roundToHalfHour(new Date()) : "";
     const newTasks = [
       ...tasks,
-      { id: Math.random().toString(36).slice(2), start: "", name: "", end: "" }
+      { id: Math.random().toString(36).slice(2), start: initialStart, name: "", end: "" }
     ];
     setTasks(newTasks);
     localStorage.setItem('daily-report-tasks', JSON.stringify(newTasks));
