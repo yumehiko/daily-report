@@ -20,6 +20,7 @@ declare global {
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [result, setResult] = useState<string>("");
+  const hasIncomplete = tasks.some(t => !t.start || !t.end);
 
   // タスク編集
   const updateTask = (id: string, key: keyof Task, value: string) => {
@@ -45,6 +46,10 @@ function App() {
   // 日報出力用データ生成
   const generateReport = () => {
     if (tasks.length === 0) return;
+    if (hasIncomplete) {
+      alert("開始時刻と終了時刻を入力してください");
+      return;
+    }
     // 日付・出勤・退勤・休憩・合計稼働・タスク集計
     const sorted = [...tasks].sort((a, b) => a.start.localeCompare(b.start));
     const date = new Date();
@@ -55,14 +60,14 @@ function App() {
     const workEnd = sorted[sorted.length - 1].end;
     // 休憩時間合計
     let breakMinutes = 0;
-    let workMap: Record<string, number> = {};
+    const workMap: Record<string, number> = {};
     sorted.forEach(t => {
       const start = t.start;
       const end = t.end;
       if (!start || !end) return;
       const [sh, sm] = start.split(":").map(Number);
       const [eh, em] = end.split(":").map(Number);
-      let min = (eh * 60 + em) - (sh * 60 + sm);
+      const min = (eh * 60 + em) - (sh * 60 + sm);
       if (t.name === "休憩") {
         breakMinutes += min;
       } else {
@@ -72,7 +77,7 @@ function App() {
     // 合計稼働時間
     const [sh, sm] = workStart.split(":").map(Number);
     const [eh, em] = workEnd.split(":").map(Number);
-    let totalMinutes = (eh * 60 + em) - (sh * 60 + sm) - breakMinutes;
+    const totalMinutes = (eh * 60 + em) - (sh * 60 + sm) - breakMinutes;
     // フォーマット関数
     const fmt = (min: number) => `${Math.floor(min/60)}:${(min%60).toString().padStart(2, "0")}`;
     // 出力
@@ -88,7 +93,7 @@ function App() {
     setResult(txt);
   };
 
-  // 保存ボタン活性判定（日付またぎチェックは簡易実装）
+  // 保存ボタン活性判定（日付またぎ・未入力チェックは簡易実装）
   const isMultiDay = tasks.some(t => t.start && t.end && t.start > t.end);
 
   return (
@@ -96,7 +101,7 @@ function App() {
       <h1>日報記録</h1>
       <div>
         <h2>タスク一覧</h2>
-        {tasks.map((t, i) => (
+        {tasks.map(t => (
           <div key={t.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
             <input type="time" value={t.start} onChange={e => updateTask(t.id, "start", e.target.value)} style={{ width: 80 }} />
             <input type="text" value={t.name} placeholder="タスク名" onChange={e => updateTask(t.id, "name", e.target.value)} style={{ width: 120 }} />
@@ -107,10 +112,11 @@ function App() {
         <button onClick={addTask} style={{ marginTop: 8 }}>＋タスク追加</button>
       </div>
       <div style={{ margin: "1.5rem 0" }}>
-        <button onClick={generateReport} disabled={isMultiDay || tasks.length === 0} style={{ fontSize: "1.1em", padding: "0.5em 1.5em" }}>
+        <button onClick={generateReport} disabled={isMultiDay || hasIncomplete || tasks.length === 0} style={{ fontSize: "1.1em", padding: "0.5em 1.5em" }}>
           保存
         </button>
         {isMultiDay && <span style={{ color: "red", marginLeft: 12 }}>日付をまたぐタスクが含まれています</span>}
+        {hasIncomplete && <span style={{ color: "red", marginLeft: 12 }}>未入力の項目があります</span>}
       </div>
       <div>
         <h2>結果表示エリア</h2>
