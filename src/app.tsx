@@ -1,5 +1,15 @@
 import { useState } from "react";
 
+// 現在時刻を30分単位で丸めてHH:MM形式で返す
+const roundedNow = () => {
+  const now = new Date();
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  const rounded = Math.round(minutes / 30) * 30;
+  const h = Math.floor(rounded / 60) % 24;
+  const m = rounded % 60;
+  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+};
+
 // タスク型定義
 type Task = {
   id: string;
@@ -27,7 +37,10 @@ function App() {
   // タスク追加
   const addTask = () => {
     const last = tasks[tasks.length - 1];
-    const start = last ? last.end : "";
+    let start = last ? last.end : "";
+    if (tasks.length === 0) {
+      start = roundedNow();
+    }
     const newTasks = [
       ...tasks,
       { id: Math.random().toString(36).slice(2), start, name: "", end: "" }
