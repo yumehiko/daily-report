@@ -29,14 +29,14 @@ export function generateReport(tasks: Task[]): string {
 
   const totalMinutes = diffMinutes(workStart, workEnd) - breakMinutes;
 
-  let txt = `日付: ${y}/${m}/${d}\n`;
-  txt += `出勤時刻: ${workStart}\n`;
-  txt += `退勤時刻: ${workEnd}\n`;
-  txt += `休憩時間: ${formatMinutes(breakMinutes)}\n`;
-  txt += `合計稼働時間: ${formatMinutes(totalMinutes)}\n`;
+  let txt = `${y}/${m}/${d}\n`;
+  txt += `出勤: ${workStart}\n`;
+  txt += `退勤: ${workEnd}\n`;
+  txt += `休憩: ${formatMinutes(breakMinutes)}\n`;
+  txt += `稼働: ${formatMinutes(totalMinutes)}\n`;
   txt += `タスク一覧\n`;
   Object.entries(workMap).forEach(([name, min]) => {
-    txt += `  - 名前: ${name} / 総作業時間: ${formatMinutes(min)}\n`;
+    txt += `  - ${name}　｜　${formatMinutes(min)}\n`;
   });
 
   return txt;
