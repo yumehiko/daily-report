@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { roundedNow } from "./utils/time";
 import { Task } from "./types";
 import { generateReport } from "./report";
@@ -41,18 +41,8 @@ function App() {
     localStorage.setItem('daily-report-tasks', JSON.stringify(newTasks));
   };
 
-  // 日報出力用データ生成
-  const handleGenerateReport = () => {
-    if (tasks.length === 0) return;
-    if (hasIncomplete) {
-      alert("開始時刻と終了時刻を入力してください");
-      return;
-    }
-    const txt = generateReport(tasks);
-    setResult(txt);
-  };
 
-  // 保存ボタン活性判定（日付またぎ・未入力チェックは簡易実装）
+  // バリデーション用フラグ（日付またぎ・未入力チェックは簡易実装）
   const isMultiDay = tasks.some(t => t.start && t.end && t.start > t.end);
 
   // 新規作成（タスク全消去＋localStorageクリア）
@@ -61,6 +51,14 @@ function App() {
     setResult("");
     localStorage.removeItem('daily-report-tasks');
   };
+
+  // 入力検証を通過したら自動で結果を更新
+  useEffect(() => {
+    if (!isMultiDay && !hasIncomplete && tasks.length > 0) {
+      const txt = generateReport(tasks);
+      setResult(txt);
+    }
+  }, [tasks, isMultiDay, hasIncomplete]);
 
   // 結果エリアクリック時にテキストをコピー
   const copyResult = () => {
@@ -98,9 +96,6 @@ function App() {
         <button onClick={addTask} style={{ marginTop: 8 }}>＋タスク追加</button>
       </div>
       <div style={{ margin: "1.5rem 0" }}>
-          <button onClick={handleGenerateReport} disabled={isMultiDay || hasIncomplete || tasks.length === 0} style={{ fontSize: "1.1em", padding: "0.5em 1.5em" }}>
-          保存
-        </button>
         {isMultiDay && <span style={{ color: "red", marginLeft: 12 }}>日付をまたぐタスクが含まれています</span>}
         {hasIncomplete && <span style={{ color: "red", marginLeft: 12 }}>未入力の項目があります</span>}
       </div>
