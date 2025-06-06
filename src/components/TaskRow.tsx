@@ -1,5 +1,6 @@
 import Button from './Button';
 import { Task } from '../types';
+import styles from './TaskRow.module.css';
 
 type Props = {
   task: Task;
@@ -9,27 +10,27 @@ type Props = {
 
 export default function TaskRow({ task, onChange, onRemove }: Props) {
   return (
-    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+    <div className={styles.row}>
       <input
         type="time"
         value={task.start}
         onChange={e => onChange(task.id, 'start', e.target.value)}
-        style={{ width: 80 }}
+        className={styles.timeInput}
       />
       <input
         type="text"
         value={task.name}
         placeholder="タスク名"
         onChange={e => onChange(task.id, 'name', e.target.value)}
-        style={{ width: 120 }}
+        className={styles.nameInput}
       />
       <input
         type="time"
         value={task.end}
         onChange={e => onChange(task.id, 'end', e.target.value)}
-        style={{ width: 80 }}
+        className={styles.timeInput}
       />
-      <Button onClick={() => onRemove(task.id)} title="削除" style={{ padding: '0 0.5em' }}>
+      <Button onClick={() => onRemove(task.id)} title="削除" className={styles.removeButton}>
         🗑️
       </Button>
     </div>

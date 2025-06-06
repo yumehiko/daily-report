@@ -1,4 +1,6 @@
 
+import styles from './ResultArea.module.css';
+
 type Props = {
   result: string;
   copyResult: () => void;
@@ -9,14 +11,14 @@ type Props = {
 export default function ResultArea({ result, copyResult, isMultiDay, hasIncomplete }: Props) {
   return (
     <>
-      <div style={{ margin: '1.5rem 0' }}>
+      <div className={styles.warningContainer}>
         {isMultiDay && (
-          <span style={{ color: 'red', marginLeft: 12 }}>
+          <span className={styles.warning}>
             日付をまたぐタスクが含まれています
           </span>
         )}
         {hasIncomplete && (
-          <span style={{ color: 'red', marginLeft: 12 }}>
+          <span className={styles.warning}>
             未入力の項目があります
           </span>
         )}
@@ -25,7 +27,7 @@ export default function ResultArea({ result, copyResult, isMultiDay, hasIncomple
         <h2>結果表示エリア</h2>
         <pre
           onClick={copyResult}
-          style={{ background: '#f4f4f4', padding: 12, borderRadius: 6, cursor: 'pointer' }}
+          className={styles.resultArea}
         >
           {result}
         </pre>

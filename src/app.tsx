@@ -5,6 +5,7 @@ import { generateReport } from "./report";
 import Button from "./components/Button";
 import TaskList from "./components/TaskList";
 import ResultArea from "./components/ResultArea";
+import styles from "./App.module.css";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -79,11 +80,11 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto', fontFamily: 'sans-serif' }}>
+    <div className={styles.container}>
       <h1>日報記録</h1>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className={styles.header}>
         <h2>タスク一覧</h2>
-        <Button onClick={handleNewDay} style={{ marginLeft: 16 }}>
+        <Button onClick={handleNewDay} className={styles.newDayButton}>
           新規作成
         </Button>
       </div>
