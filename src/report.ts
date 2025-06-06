@@ -36,7 +36,7 @@ export function generateReport(tasks: Task[]): string {
   txt += `稼働: ${formatMinutes(totalMinutes)}\n`;
   txt += `タスク一覧\n`;
   Object.entries(workMap).forEach(([name, min]) => {
-    txt += `  - ${name}　｜　${formatMinutes(min)}\n`;
+    txt += `  - ${name} | ${formatMinutes(min)}\n`;
   });
 
   return txt;

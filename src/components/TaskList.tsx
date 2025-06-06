@@ -1,6 +1,7 @@
 import { Task } from '../types';
 import Button from './Button';
 import TaskRow from './TaskRow';
+import styles from './TaskList.module.css';
 
 type Props = {
   tasks: Task[];
@@ -15,7 +16,7 @@ export default function TaskList({ tasks, addTask, updateTask, removeTask }: Pro
       {tasks.map(t => (
         <TaskRow key={t.id} task={t} onChange={updateTask} onRemove={removeTask} />
       ))}
-      <Button onClick={addTask} style={{ marginTop: 8 }}>
+      <Button onClick={addTask} className={styles.addButton}>
         ＋タスク追加
       </Button>
     </div>

@@ -1,0 +1,15 @@
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.timeInput {
+  width: 80px;
+}
+.nameInput {
+  width: 120px;
+}
+.removeButton {
+  padding: 0 0.5em;
+}

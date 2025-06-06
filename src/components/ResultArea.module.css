@@ -1,0 +1,13 @@
+.warningContainer {
+  margin: 1.5rem 0;
+}
+.warning {
+  color: red;
+  margin-left: 12px;
+}
+.resultArea {
+  background: #f4f4f4;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
