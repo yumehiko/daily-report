@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { roundedNow } from "./utils/time";
 import { Task } from "./types";
 import { generateReport } from "./report";
+import Button from "./components/Button";
+import TaskList from "./components/TaskList";
+import ResultArea from "./components/ResultArea";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -76,38 +79,21 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
+    <div style={{ maxWidth: 600, margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>日報記録</h1>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2>タスク一覧</h2>
-        <button onClick={handleNewDay} style={{ background: '#eee', border: '1px solid #ccc', borderRadius: 4, padding: '0.3em 1em', marginLeft: 16 }}>
+        <Button onClick={handleNewDay} style={{ marginLeft: 16 }}>
           新規作成
-        </button>
+        </Button>
       </div>
-      <div>
-        {tasks.map(t => (
-          <div key={t.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
-            <input type="time" value={t.start} onChange={e => updateTask(t.id, "start", e.target.value)} style={{ width: 80 }} />
-            <input type="text" value={t.name} placeholder="タスク名" onChange={e => updateTask(t.id, "name", e.target.value)} style={{ width: 120 }} />
-            <input type="time" value={t.end} onChange={e => updateTask(t.id, "end", e.target.value)} style={{ width: 80 }} />
-            <button onClick={() => removeTask(t.id)} title="削除">🗑️</button>
-          </div>
-        ))}
-        <button onClick={addTask} style={{ marginTop: 8 }}>＋タスク追加</button>
-      </div>
-      <div style={{ margin: "1.5rem 0" }}>
-        {isMultiDay && <span style={{ color: "red", marginLeft: 12 }}>日付をまたぐタスクが含まれています</span>}
-        {hasIncomplete && <span style={{ color: "red", marginLeft: 12 }}>未入力の項目があります</span>}
-      </div>
-      <div>
-        <h2>結果表示エリア</h2>
-        <pre
-          onClick={copyResult}
-          style={{ background: "#f4f4f4", padding: 12, borderRadius: 6, cursor: "pointer" }}
-        >
-          {result}
-        </pre>
-      </div>
+      <TaskList tasks={tasks} addTask={addTask} updateTask={updateTask} removeTask={removeTask} />
+      <ResultArea
+        result={result}
+        copyResult={copyResult}
+        isMultiDay={isMultiDay}
+        hasIncomplete={hasIncomplete}
+      />
     </div>
   );
 }
